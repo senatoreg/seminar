@@ -6,10 +6,11 @@ const moment = require('moment');
 var cors = require('cors');
 
 const app = express();
-app.use(cors({ credentials: true, origin: true }));
+const corsParams = { credentials: true, origin: true };
+app.use(cors(corsParams));
 
 const server = http.createServer(app);
-const io = socketio(server);
+const io = socketio(server, { cors: corsParams });
 
 // Set root for URL
 app.use(express.static(path.join(__dirname, '/www/')));
