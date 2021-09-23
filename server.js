@@ -1,15 +1,26 @@
 const path = require('path');
 const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const socketio = require('socket.io');
 const moment = require('moment');
 var cors = require('cors');
 
-const app = express();
+let ssl_cert = process.env.SSL_CERT === undefined ? path.join(__dirname, 'certs/cert.pem') : process.env.SSL_CERT;
+let ssl_key = process.env.SSL_KEY === undefined ? path.join(__dirname, 'certs/key.pem') : process.env.SSL_KEY;
+
+const options = {
+  key: fs.readFileSync(ssl_key, 'utf-8'),
+  cert: fs.readFileSync(ssl_cert, 'utf-8')
+}
 const corsParams = { credentials: true, origin: true };
+
+const app = express();
 app.use(cors(corsParams));
 
-const server = http.createServer(app);
+const server = process.env.SSL === undefined ? http.createServer(app) : https.createServer(options, app);
+
 const io = socketio(server, { cors: corsParams });
 
 // Set root for URL

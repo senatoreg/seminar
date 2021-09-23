@@ -5,4 +5,4 @@ WORKDIR /seminar
 COPY server.js package.json .
 COPY www www
 RUN npm install
-CMD npm run start
+CMD SSL=1 npm run start
