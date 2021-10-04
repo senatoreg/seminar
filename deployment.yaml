@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seminar-deployment
+  labels:
+    app: seminar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: seminar
+  template:
+    metadata:
+      labels:
+        app: seminar
+    spec:
+      containers:
+      - name: seminar
+        image: docker.io/senatoreg/seminar:latest
+        ports:
+        - containerPort: 4433
+        livenessProbe:
+          httpGet:
+            path: /socket.io/?EIO=4&transport=polling
+            port: 4433
+          initialDelaySeconds: 3
+          periodSeconds: 3

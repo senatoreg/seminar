@@ -4,5 +4,6 @@ EXPOSE 4433/udp
 WORKDIR /seminar
 COPY server.js package.json .
 COPY www www
+COPY certs certs
 RUN npm install
-CMD SSL=1 npm run start
+CMD npm run start
