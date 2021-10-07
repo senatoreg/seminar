@@ -21,7 +21,7 @@ spec:
         - containerPort: 4433
         livenessProbe:
           httpGet:
-            path: /socket.io/?EIO=4&transport=polling
+            path: /seminar/socket.io/?EIO=4&transport=polling
             port: 4433
           initialDelaySeconds: 3
           periodSeconds: 3

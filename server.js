@@ -21,10 +21,10 @@ app.use(cors(corsParams));
 
 const server = process.env.SSL === undefined ? http.createServer(app) : https.createServer(options, app);
 
-const io = socketio(server, { cors: corsParams });
+const io = socketio(server, { path: "/seminar/socket.io/", cors: corsParams });
 
 // Set root for URL
-app.use(express.static(path.join(__dirname, '/www/')));
+app.use('/seminar/', express.static(path.join(__dirname, '/www/')));
 
 
 /**
