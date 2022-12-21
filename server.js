@@ -26,6 +26,25 @@ const io = socketio(server, { path: "/seminar/socket.io/", cors: corsParams });
 // Set root for URL
 app.use('/seminar/', express.static(path.join(__dirname, '/www/')));
 
+var server;
+
+const args = process.argv.slice(2);
+if (args.length < 2 ) {
+  // no ssl key and certificate provided => use http
+  server = http.createServer(app);
+}
+else {
+  // path of ssl key and certificate provided => use https
+  var fs = require('fs');
+  var privateKey = fs.readFileSync(args[0]);
+  var certificate = fs.readFileSync(args[1]);
+  var credentials = {key: privateKey, cert: certificate};
+  server = https.createServer(credentials,app);
+}
+
+const io = socketio(server);
+
+
 
 /**
 Authorisation
@@ -125,6 +144,11 @@ console.log(`${socket.id} checked in with name "${name}"`);
 		if ( !validate(venue, name, hash, secret, callback) ) return false;
 
 		const user = getUser(socket.id);
+		if ( !user ) {
+			callback("User not found!");
+			return false;
+		}
+
 		const i = getRoomIndex(venue,name,hash);
 
 		if (i !== -1) {
@@ -179,11 +203,16 @@ console.log(`${socket.id} closes room "${rooms[i].venue}|${rooms[i].name}|${room
 	function enterRoom( i, callback ) {
 		if ( i === -1 ) {
 			if ( callback ) callback("Room not found");
-			return;
+			return false;
 		}
 
 console.log(`${socket.id} enters room "${rooms[i].venue}|${rooms[i].name}|${rooms[i].hash}"`);
 		const user = getUser(socket.id);
+		if ( !user ) {
+			callback("User not found!");
+			return false;
+		}
+
 		participants[i].push(user);	
 
 		socket.join( label(rooms[i]) );
@@ -196,10 +225,14 @@ console.log(`${socket.id} enters room "${rooms[i].venue}|${rooms[i].name}|${room
 	function leaveRoom( i, callback ) {
 		if ( i === -1 ) {
 			if ( callback ) callback("Room not found");
-			return;
+			return false;
 		}
 
 		const user = getUser(socket.id);
+		if ( !user ) {
+			callback("User not found!");
+			return false;
+		}
 
 		const chair = ( user.id == hosts[i][0].id );
 		// remove user from hosts
@@ -259,9 +292,14 @@ console.log(`${socket.id} leaves room "${rooms[i].venue}|${rooms[i].name}|${room
 		}
 		if ( i === -1 ) {
 			if ( callback ) callback("Room not found");
-			return;
+			return false;
 		}
 		const user = getUser(socket.id);
+		if ( !user ) {
+			callback("User not found!");
+			return false;
+		}
+
 		if ( recipient ) {
 			// recipient must be participant in the room
 			const j = participants[i].findIndex(participant => participant.id === recipient);
@@ -319,7 +357,7 @@ console.log(`${socket.id} checked out`);
 		const i = getRoomIndex(venue,name,hash);
 		if ( i === -1 ) {
 			if ( callback ) callback("Room not found");
-			return;
+			return false;
 		}
 console.log(`${socket.id} sends message to "${recipient}"`, content);
 		// participants can send messages to all participants in the room
@@ -330,7 +368,7 @@ console.log(`${socket.id} sends message to "${recipient}"`, content);
 		const i = getRoomIndex(venue,name,hash);
 		if ( i === -1 ) {
 			if ( callback ) callback("Room not found");
-			return;
+			return false;
 		}
 
 		// hosts can send announcements to all participants in the room

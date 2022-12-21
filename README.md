@@ -9,8 +9,25 @@ npm install
 npm run start
 ```
 
+## Http and Https
+
+By default an http server is started:
+```
+node server.js
+```
+
+If the path to a key and certificate are provided, an https server is started:
+
+```
+node server.js <path_to_key.pem> <path_to_cert.pem>
+```
+
+The key and certificate can be obtained, e.g., by following the instructions on https://certbot.eff.org/instructions.
+
+Make sure to ensure that certificates are renewed when necessary, e.g. by adding a cronjob. When using automatic renewal, the server may have to be restarted.
+
 ## License
 
 MIT licensed
 
-Copyright (C) 2021 Asvin Goel
+Copyright (C) 2022 Asvin Goel
