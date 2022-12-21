@@ -26,25 +26,6 @@ const io = socketio(server, { path: "/seminar/socket.io/", cors: corsParams });
 // Set root for URL
 app.use('/seminar/', express.static(path.join(__dirname, '/www/')));
 
-var server;
-
-const args = process.argv.slice(2);
-if (args.length < 2 ) {
-  // no ssl key and certificate provided => use http
-  server = http.createServer(app);
-}
-else {
-  // path of ssl key and certificate provided => use https
-  var fs = require('fs');
-  var privateKey = fs.readFileSync(args[0]);
-  var certificate = fs.readFileSync(args[1]);
-  var credentials = {key: privateKey, cert: certificate};
-  server = https.createServer(credentials,app);
-}
-
-const io = socketio(server);
-
-
 
 /**
 Authorisation
