@@ -6,4 +6,5 @@ COPY server.js package.json .
 COPY www www
 COPY certs certs
 RUN npm install
+RUN npm audit fix --force
 CMD npm run start
