@@ -1,4 +1,4 @@
-FROM node:current-slim
+FROM docker.io/node:current-slim
 EXPOSE 4433/tcp
 EXPOSE 4433/udp
 WORKDIR /seminar
