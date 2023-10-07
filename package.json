@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server",
     "dev": "DEBUG=socket.io:client,socket.io:socket nodemon server",
-    "buildah": "buildah bud --network host -f Dockerfile --tag docker.io/senatoreg/seminar:latest ."
+    "buildah": "buildah bud -f Dockerfile --tag docker.io/senatoreg/seminar:latest ."
   },
   "author": "Asvin Goel",
   "repository": {
@@ -19,9 +19,9 @@
     "cors": "2.8.5",
     "socket.io": "^4.6.1",
     "moment": "^2.29.4",
-    "bcrypt": "^5.1.0"
+    "bcrypt": "^5.1.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.22"
   }
 }
